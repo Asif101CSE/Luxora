@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxora | Luxury Redefined</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --card-bg: rgba(30, 30, 30, 0.7);
+            --glass-bg: rgba(30, 30, 30, 0.4);
+            --gold-primary: #d4af37;
+            --gold-secondary: #b8860b;
+            --gold-accent: #ffd700;
+            --text-light: #f5f5f5;
+            --text-gray: #b0b0b0;
+            --transition: all 0.4s ease;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-bg), #131313);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center/cover;
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            padding: 1.2rem 5%;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--gold-accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+        }
+
+        nav ul li a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            position: relative;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+        }
+
+        nav ul li a:hover {
+            color: var(--gold-primary);
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold-primary);
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons a {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            margin-left: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-icons a:hover {
+            color: var(--gold-primary);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: var(--gold-accent);
+            color: var(--primary-bg);
+            font-size: 0.7rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.8rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 7rem 2rem 3rem;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            margin-bottom: 4rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.5) 100%), 
+                        url('https://images.unsplash.com/photo-1601924994987-69e26d50dc26?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center center/cover;
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            padding: 3rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            margin-left: 5%;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            box-shadow: var(--shadow);
+            animation: slideIn 1s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(to right, var(--gold-primary), var(--gold-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: var(--primary-bg);
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--gold-primary);
+            color: var(--gold-primary);
+            margin-left: 1rem;
+        }
+
+        .btn-outline:hover {
+            background: var(--gold-primary);
+            color: var(--primary-bg);
+        }
+
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            display: inline-block;
+            background: linear-gradient(to right, var(--gold-primary), var(--gold-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--gold-primary), var(--gold-accent));
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(212, 175, 55, 0.2);
+        }
+
+        .product-img {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-img img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 1rem;
+        }
+
+        .product-description {
+            color: var(--text-gray);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: var(--primary-bg);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .add-to-cart:hover {
+            opacity: 0.9;
+        }
+
+        /* Cart Page */
+        .cart-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .cart-items {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .cart-summary {
+            width: 350px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .cart-item {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cart-item-img {
+            width: 150px;
+            height: 150px;
+        }
+
+        .cart-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cart-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .cart-item-name {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            color: var(--gold-primary);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            padding: 0.3rem;
+            margin-right: 1rem;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            color: var(--primary-bg);
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .quantity {
+            margin: 0 0.8rem;
+            font-weight: 600;
+        }
+
+        .remove-item {
+            background: transparent;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .remove-item:hover {
+            color: #c0392b;
+        }
+
+        .cart-summary h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--gold-primary);
+            text-align: center;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold-accent);
+            margin: 1.5rem 0;
+        }
+
+        /* Checkout Page */
+        .checkout-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .checkout-form {
+            flex: 1;
+            min-width: 300px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .checkout-summary {
+            width: 350px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Thank You Page */
+        .thank-you {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 4rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .thank-you i {
+            font-size: 5rem;
+            color: var(--gold-primary);
+            margin-bottom: 2rem;
+        }
+
+        .thank-you h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--gold-primary), var(--gold-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .thank-you p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: var(--text-gray);
+        }
+
+        .order-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .order-details h3 {
+            color: var(--gold-primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tracking-info {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(180, 134, 11, 0.1));
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .tracking-info h3 {
+            color: var(--gold-accent);
+            margin-bottom: 1rem;
+        }
+
+        .tracking-progress {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .tracking-progress::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .tracking-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            color: var(--primary-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        /* Admin Panel */
+        .admin-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h2 {
+            color: var(--gold-primary);
+            font-size: 2rem;
+        }
+
+        .admin-content {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .add-product-form {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .product-list {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .admin-product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .admin-product-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .admin-product-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 1.5rem;
+        }
+
+        .admin-product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .admin-product-info {
+            flex: 1;
+        }
+
+        .admin-product-name {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .admin-product-price {
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        .admin-product-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .admin-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .edit-btn {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+
+        .edit-btn:hover {
+            background: rgba(52, 152, 219, 0.3);
+        }
+
+        .delete-btn {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background: rgba(231, 76, 60, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary-bg);
+            padding: 3rem 5%;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-column h3 {
+            color: var(--gold-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-column p {
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--gold-primary);
+            margin-left: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--gold-primary);
+            color: var(--primary-bg);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-content {
+                margin: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            nav ul {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: var(--secondary-bg);
+                flex-direction: column;
+                align-items: center;
+                padding-top: 3rem;
+                transition: var(--transition);
+            }
+
+            nav ul.active {
+                left: 0;
+            }
+
+            nav ul li {
+                margin: 1.5rem 0;
+            }
+
+            .hero-content {
+                margin: 1rem;
+                padding: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .btn-outline {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 6rem 1rem 2rem;
+            }
+
+            .cart-item {
+                flex-direction: column;
+            }
+
+            .cart-item-img {
+                width: 100%;
+                height: 200px;
+            }
+
+            .cart-summary,
+            .checkout-summary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="#" class="logo" data-page="home">
+            <i class="fas fa-gem"></i>
+            LUXORA
+        </a>
+        
+        <div class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="#" data-page="home">Home</a></li>
+                <li><a href="#" data-page="products">Collections</a></li>
+                <li><a href="#" data-page="cart">Cart</a></li>
+                <li><a href="#" data-page="admin">Admin</a></li>
+            </ul>
+        </nav>
+        
+        <div class="nav-icons">
+            <a href="#" data-page="cart">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-count">0</span>
+            </a>
+            <a href="#"><i class="fas fa-user"></i></a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>ELEVATE YOUR LUXURY EXPERIENCE</h1>
+                    <p>Discover the epitome of elegance and sophistication with our exclusive collection of luxury items. Crafted with precision and passion, each piece tells a story of timeless beauty.</p>
+                    <div class="hero-btns">
+                        <a href="#" class="btn" data-page="products">SHOP COLLECTION</a>
+                        <a href="#" class="btn btn-outline">LEARN MORE</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>Featured Collection</h2>
+            </div>
+
+            <div class="products-grid">
+                <!-- Featured products will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div id="products" class="page">
+            <div class="section-title">
+                <h2>Luxury Collection</h2>
+                <p>Exquisite pieces for the discerning connoisseur</p>
+            </div>
+
+            <div class="products-grid">
+                <!-- All products will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Cart Page -->
+        <div id="cart" class="page">
+            <div class="section-title">
+                <h2>Your Luxury Selection</h2>
+                <p>Review and proceed with your exquisite choices</p>
+            </div>
+
+            <div class="cart-container">
+                <div class="cart-items">
+                    <!-- Cart items will be inserted here by JavaScript -->
+                </div>
+
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span id="tax">$0.00</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="total">$0.00</span>
+                    </div>
+                    <a href="#" class="btn" data-page="checkout">PROCEED TO CHECKOUT</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Page -->
+        <div id="checkout" class="page">
+            <div class="section-title">
+                <h2>Complete Your Purchase</h2>
+                <p>Final step to acquire your luxury items</p>
+            </div>
+
+            <div class="checkout-container">
+                <div class="checkout-form">
+                    <h3>Shipping Information</h3>
+                    <div class="form-group">
+                        <label for="fullname">Full Name</label>
+                        <input type="text" id="fullname" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Shipping Address</label>
+                        <input type="text" id="address" placeholder="Enter your shipping address">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" placeholder="Enter your city">
+                        </div>
+                        <div class="form-group">
+                            <label for="zip">ZIP Code</label>
+                            <input type="text" id="zip" placeholder="Enter ZIP code">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country">
+                                <option value="">Select Country</option>
+                                <option value="usa">United States</option>
+                                <option value="uk">United Kingdom</option>
+                                <option value="ca">Canada</option>
+                                <option value="au">Australia</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" placeholder="Enter your phone">
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 2rem;">Payment Details</h3>
+                    <div class="form-group">
+                        <label for="card-name">Name on Card</label>
+                        <input type="text" id="card-name" placeholder="Enter name as on card">
+                    </div>
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="Enter card number">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="exp-date">Expiration Date</label>
+                            <input type="text" id="exp-date" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="CVV">
+                        </div>
+                    </div>
+                    
+                    <button id="pay-now" class="btn">PAY NOW</button>
+                </div>
+
+                <div class="checkout-summary">
+                    <h3>Order Summary</h3>
+                    <div class="cart-items">
+                        <!-- Checkout cart items will be inserted here by JavaScript -->
+                    </div>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="checkout-subtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span id="checkout-tax">$0.00</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="checkout-total">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thank You Page -->
+        <div id="thankyou" class="page">
+            <div class="thank-you">
+                <i class="fas fa-gift"></i>
+                <h2>Thank You For Your Order!</h2>
+                <p>Your exquisite selections are being prepared with the utmost care. We've sent a confirmation email with all the details of your purchase. Your luxury experience has just begun.</p>
+                
+                <div class="order-details">
+                    <h3>Order Information</h3>
+                    <div class="order-row">
+                        <span>Order Number:</span>
+                        <span>LX-2023-<span id="order-num">7854</span></span>
+                    </div>
+                    <div class="order-row">
+                        <span>Order Date:</span>
+                        <span id="order-date">June 25, 2023</span>
+                    </div>
+                    <div class="order-row">
+                        <span>Total Amount:</span>
+                        <span id="order-total">$0.00</span>
+                    </div>
+                    <div class="order-row">
+                        <span>Payment Method:</span>
+                        <span>Credit Card</span>
+                    </div>
+                    <div class="order-row">
+                        <span>Delivery Address:</span>
+                        <span id="delivery-address">123 Luxury Ave, Beverly Hills, CA 90210</span>
+                    </div>
+                </div>
+                
+                <div class="tracking-info">
+                    <h3>Delivery Tracking</h3>
+                    <p>Your order is currently being processed and will be shipped within 24 hours.</p>
+                    
+                    <div class="tracking-progress">
+                        <div class="tracking-step">
+                            <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                            <div class="step-label">Order Placed</div>
+                        </div>
+                        <div class="tracking-step">
+                            <div class="step-icon"><i class="fas fa-cog"></i></div>
+                            <div class="step-label">Processing</div>
+                        </div>
+                        <div class="tracking-step">
+                            <div class="step-icon"><i class="fas fa-shipping-fast"></i></div>
+                            <div class="step-label">Shipped</div>
+                        </div>
+                        <div class="tracking-step">
+                            <div class="step-icon"><i class="fas fa-home"></i></div>
+                            <div class="step-label">Delivered</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="#" class="btn" data-page="home">CONTINUE SHOPPING</a>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="admin" class="page">
+            <div class="admin-container">
+                <div class="admin-header">
+                    <h2>Product Management</h2>
+                    <button class="btn" id="add-product-toggle">+ Add New Product</button>
+                </div>
+                
+                <div class="admin-content">
+                    <div class="add-product-form" id="add-product-form" style="display: none;">
+                        <h3>Add New Product</h3>
+                        <div class="form-group">
+                            <label for="product-name">Product Name</label>
+                            <input type="text" id="product-name" placeholder="Enter product name">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-price">Price ($)</label>
+                            <input type="number" id="product-price" placeholder="Enter price">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-image">Image URL</label>
+                            <input type="text" id="product-image" placeholder="Enter image URL">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-description">Description</label>
+                            <textarea id="product-description" placeholder="Enter product description" rows="4" style="width: 100%; padding: 0.8rem 1rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); color: var(--text-light); font-size: 1rem; transition: var(--transition);"></textarea>
+                        </div>
+                        <button id="save-product" class="btn">SAVE PRODUCT</button>
+                    </div>
+                    
+                    <div class="product-list">
+                        <h3>Current Products</h3>
+                        <div id="admin-products">
+                            <!-- Admin product list will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>LUXORA</h3>
+                <p>Elevating luxury experiences with exquisite craftsmanship and timeless elegance since 2010.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Jewelry</a></li>
+                    <li><a href="#">Watches</a></li>
+                    <li><a href="#">Accessories</a></li>
+                    <li><a href="#">Home Decor</a></li>
+                    <li><a href="#">New Arrivals</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Customer Service</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Returns & Exchanges</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contact</h3>
+                <p><i class="fas fa-map-marker-alt"></i> 888 Rodeo Drive, Beverly Hills</p>
+                <p><i class="fas fa-phone"></i> +1 (888) LUX-ORA</p>
+                <p><i class="fas fa-envelope"></i> contact@luxora.com</p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 LUXORA. All rights reserved. Crafted with elegance and precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize products
+        const products = [
+            {
+                id: 1,
+                name: "Diamond Solitaire Ring",
+                price: 2850,
+                image: "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "Exquisite 1.5 carat diamond set in 18K white gold."
+            },
+            {
+                id: 2,
+                name: "Platinum Chronograph Watch",
+                price: 4200,
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "Swiss-made automatic movement with sapphire crystal face."
+            },
+            {
+                id: 3,
+                name: "Designer Leather Handbag",
+                price: 1800,
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "Handcrafted Italian leather with gold-tone hardware."
+            },
+            {
+                id: 4,
+                name: "Pearl Drop Earrings",
+                price: 950,
+                image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "South Sea pearls set in 14K yellow gold."
+            },
+            {
+                id: 5,
+                name: "Limited Edition Fountain Pen",
+                price: 650,
+                image: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "Handcrafted with sterling silver and 18K gold nib."
+            },
+            {
+                id: 6,
+                name: "Cashmere Travel Wrap",
+                price: 480,
+                image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "Luxuriously soft Mongolian cashmere in classic ivory."
+            },
+            {
+                id: 7,
+                name: "Crystal Decanter Set",
+                price: 780,
+                image: "https://images.unsplash.com/photo-1595433707803-12c4b1a76a15?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "Hand-cut crystal with geometric design and 4 glasses."
+            },
+            {
+                id: 8,
+                name: "Gold Cuff Bracelet",
+                price: 1250,
+                image: "https://images.unsplash.com/photo-1610998342124-4d2a3a5bb5b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                description: "18K gold with intricate hand-engraved pattern."
+            }
+        ];
+
+        // Initialize cart
+        let cart = [];
+
+        // DOM Elements
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('nav a, .nav-icons a, .logo, .btn');
+        const cartCount = document.querySelector('.cart-count');
+        const productsGrid = document.querySelectorAll('.products-grid');
+        const cartItemsContainer = document.querySelector('.cart-items');
+        const adminProductsContainer = document.getElementById('admin-products');
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('nav ul');
+
+        // Initialize the app
+        function initApp() {
+            // Load cart from localStorage
+            const savedCart = localStorage.getItem('luxoraCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartCount();
+            }
+            
+            // Load products from localStorage or initialize
+            const savedProducts = localStorage.getItem('luxoraProducts');
+            if (savedProducts) {
+                products = JSON.parse(savedProducts);
+            } else {
+                localStorage.setItem('luxoraProducts', JSON.stringify(products));
+            }
+            
+            // Render featured products on home page
+            renderFeaturedProducts();
+            
+            // Render all products on products page
+            renderAllProducts();
+            
+            // Render admin products
+            renderAdminProducts();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Show home page by default
+            showPage('home');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.getAttribute('data-page');
+                    if (page) {
+                        showPage(page);
+                        if (navMenu.classList.contains('active')) {
+                            navMenu.classList.remove('active');
+                        }
+                    }
+                });
+            });
+            
+            // Hamburger menu
+            hamburger.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+            
+            // Admin panel
+            document.getElementById('add-product-toggle').addEventListener('click', () => {
+                const form = document.getElementById('add-product-form');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            document.getElementById('save-product').addEventListener('click', addNewProduct);
+            
+            // Checkout
+            document.getElementById('pay-now').addEventListener('click', processPayment);
+        }
+
+        // Show specific page
+        function showPage(pageName) {
+            // Hide all pages
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show requested page
+            document.getElementById(pageName).classList.add('active');
+            
+            // Special rendering for certain pages
+            if (pageName === 'cart') {
+                renderCart();
+            } else if (pageName === 'checkout') {
+                renderCheckout();
+            }
+        }
+
+        // Render featured products on home page
+        function renderFeaturedProducts() {
+            const featuredProducts = products.slice(0, 4);
+            const grid = productsGrid[0];
+            grid.innerHTML = '';
+            
+            featuredProducts.forEach(product => {
+                grid.innerHTML += createProductCard(product);
+            });
+            
+            // Add event listeners to add-to-cart buttons
+            addCartEventListeners();
+        }
+
+        // Render all products on products page
+        function renderAllProducts() {
+            const grid = productsGrid[1];
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                grid.innerHTML += createProductCard(product);
+            });
+            
+            // Add event listeners to add-to-cart buttons
+            addCartEventListeners();
+        }
+
+        // Create product card HTML
+        function createProductCard(product) {
+            return `
+                <div class="product-card">
+                    <div class="product-img">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <p class="product-description">${product.description}</p>
+                        <button class="add-to-cart" data-id="${product.id}">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add event listeners to add-to-cart buttons
+        function addCartEventListeners() {
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.getAttribute('data-id'));
+                    addToCart(productId);
+                });
+            });
+        }
+
+        // Add product to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+            
+            // Update localStorage
+            localStorage.setItem('luxoraCart', JSON.stringify(cart));
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Show notification
+            showNotification(`${product.name} added to cart`);
+        }
+
+        // Update cart count in navbar
+        function updateCartCount() {
+            const count = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = count;
+        }
+
+        // Render cart page
+        function renderCart() {
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <h3>Your cart is empty</h3>
+                        <p>Discover our luxury collection and add items to your cart</p>
+                        <a href="#" class="btn" data-page="products">SHOP NOW</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            cartItemsContainer.innerHTML = '';
+            
+            cart.forEach(item => {
+                cartItemsContainer.innerHTML += `
+                    <div class="cart-item" data-id="${item.id}">
+                        <div class="cart-item-img">
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-top">
+                                <div>
+                                    <div class="cart-item-name">${item.name}</div>
+                                    <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                                </div>
+                                <button class="remove-item"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <div class="cart-item-actions">
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn minus">-</button>
+                                    <span class="quantity">${item.quantity}</span>
+                                    <button class="quantity-btn plus">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Add event listeners for cart actions
+            addCartActionListeners();
+            
+            // Update cart summary
+            updateCartSummary();
+        }
+
+        // Add event listeners for cart actions
+        function addCartActionListeners() {
+            // Quantity buttons
+            document.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const cartItem = e.target.closest('.cart-item');
+                    const itemId = parseInt(cartItem.getAttribute('data-id'));
+                    const isPlus = e.target.classList.contains('plus');
+                    
+                    updateCartItemQuantity(itemId, isPlus);
+                });
+            });
+            
+            // Remove buttons
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const cartItem = e.target.closest('.cart-item');
+                    const itemId = parseInt(cartItem.getAttribute('data-id'));
+                    
+                    removeCartItem(itemId);
+                });
+            });
+        }
+
+        // Update cart item quantity
+        function updateCartItemQuantity(itemId, isPlus) {
+            const cartItem = cart.find(item => item.id === itemId);
+            if (!cartItem) return;
+            
+            if (isPlus) {
+                cartItem.quantity += 1;
+            } else {
+                if (cartItem.quantity > 1) {
+                    cartItem.quantity -= 1;
+                } else {
+                    removeCartItem(itemId);
+                    return;
+                }
+            }
+            
+            // Update localStorage
+            localStorage.setItem('luxoraCart', JSON.stringify(cart));
+            
+            // Re-render cart
+            renderCart();
+            
+            // Update cart count
+            updateCartCount();
+        }
+
+        // Remove item from cart
+        function removeCartItem(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            
+            // Update localStorage
+            localStorage.setItem('luxoraCart', JSON.stringify(cart));
+            
+            // Re-render cart
+            renderCart();
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Show notification
+            const product = products.find(p => p.id === itemId);
+            if (product) {
+                showNotification(`${product.name} removed from cart`);
+            }
+        }
+
+        // Update cart summary
+        function updateCartSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.08;
+            const total = subtotal + tax;
+            
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Render checkout page
+        function renderCheckout() {
+            const checkoutItems = document.querySelector('.checkout-summary .cart-items');
+            checkoutItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                checkoutItems.innerHTML = '<p>Your cart is empty</p>';
+                return;
+            }
+            
+            cart.forEach(item => {
+                checkoutItems.innerHTML += `
+                    <div class="summary-row">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+            
+            // Update checkout summary
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.08;
+            const total = subtotal + tax;
+            
+            document.getElementById('checkout-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('checkout-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Process payment
+        function processPayment() {
+            // Simple validation
+            const fullName = document.getElementById('fullname').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            
+            if (!fullName || !email || !address) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Simulate Stripe payment processing
+            showNotification('Processing payment...');
+            
+            setTimeout(() => {
+                // Save order details
+                const orderTotal = document.getElementById('checkout-total').textContent;
+                const deliveryAddress = document.getElementById('address').value;
+                
+                document.getElementById('order-total').textContent = orderTotal;
+                document.getElementById('delivery-address').textContent = deliveryAddress;
+                
+                // Generate random order number
+                document.getElementById('order-num').textContent = Math.floor(1000 + Math.random() * 9000);
+                
+                // Set current date
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('order-date').textContent = now.toLocaleDateString('en-US', options);
+                
+                // Clear cart
+                cart = [];
+                localStorage.removeItem('luxoraCart');
+                updateCartCount();
+                
+                // Show thank you page
+                showPage('thankyou');
+                
+                // Show success notification
+                showNotification('Payment processed successfully!');
+            }, 2000);
+        }
+
+        // Render admin products
+        function renderAdminProducts() {
+            adminProductsContainer.innerHTML = '';
+            
+            products.forEach(product => {
+                adminProductsContainer.innerHTML += `
+                    <div class="admin-product-card" data-id="${product.id}">
+                        <div class="admin-product-img">
+                            <img src="${product.image}" alt="${product.name}">
+                        </div>
+                        <div class="admin-product-info">
+                            <div class="admin-product-name">${product.name}</div>
+                            <div class="admin-product-price">$${product.price.toFixed(2)}</div>
+                        </div>
+                        <div class="admin-product-actions">
+                            <button class="admin-btn edit-btn" data-id="${product.id}">Edit</button>
+                            <button class="admin-btn delete-btn" data-id="${product.id}">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Add event listeners for admin actions
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.getAttribute('data-id'));
+                    editProduct(productId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.getAttribute('data-id'));
+                    deleteProduct(productId);
+                });
+            });
+        }
+
+        // Add new product
+        function addNewProduct() {
+            const name = document.getElementById('product-name').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            const image = document.getElementById('product-image').value;
+            const description = document.getElementById('product-description').value;
+            
+            if (!name || !price || !image) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const newProduct = {
+                id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                name,
+                price,
+                image,
+                description
+            };
+            
+            products.push(newProduct);
+            localStorage.setItem('luxoraProducts', JSON.stringify(products));
+            
+            // Clear form
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-image').value = '';
+            document.getElementById('product-description').value = '';
+            
+            // Update products display
+            renderAllProducts();
+            renderFeaturedProducts();
+            renderAdminProducts();
+            
+            // Show notification
+            showNotification('Product added successfully');
+        }
+
+        // Edit product (placeholder - would show in form)
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            // For this demo, we'll just show a notification
+            showNotification(`Editing ${product.name}...`);
+            
+            // In a real implementation, we would populate the form with product data
+            document.getElementById('add-product-form').style.display = 'block';
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('product-price').value = product.price;
+            document.getElementById('product-image').value = product.image;
+            document.getElementById('product-description').value = product.description;
+            
+            // Change button to update
+            const saveBtn = document.getElementById('save-product');
+            saveBtn.textContent = 'UPDATE PRODUCT';
+            saveBtn.onclick = function() {
+                updateProduct(productId);
+            };
+        }
+
+        // Update product
+        function updateProduct(productId) {
+            const name = document.getElementById('product-name').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            const image = document.getElementById('product-image').value;
+            const description = document.getElementById('product-description').value;
+            
+            if (!name || !price || !image) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex !== -1) {
+                products[productIndex] = {
+                    id: productId,
+                    name,
+                    price,
+                    image,
+                    description
+                };
+                
+                localStorage.setItem('luxoraProducts', JSON.stringify(products));
+                
+                // Reset form
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-price').value = '';
+                document.getElementById('product-image').value = '';
+                document.getElementById('product-description').value = '';
+                document.getElementById('add-product-form').style.display = 'none';
+                
+                // Change button back to save
+                const saveBtn = document.getElementById('save-product');
+                saveBtn.textContent = 'SAVE PRODUCT';
+                saveBtn.onclick = addNewProduct;
+                
+                // Update products display
+                renderAllProducts();
+                renderFeaturedProducts();
+                renderAdminProducts();
+                
+                // Show notification
+                showNotification('Product updated successfully');
+            }
+        }
+
+        // Delete product
+        function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex !== -1) {
+                const productName = products[productIndex].name;
+                products.splice(productIndex, 1);
+                localStorage.setItem('luxoraProducts', JSON.stringify(products));
+                
+                // Update products display
+                renderAllProducts();
+                renderFeaturedProducts();
+                renderAdminProducts();
+                
+                // Show notification
+                showNotification(`${productName} deleted successfully`);
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            // Remove existing notification if any
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Position notification
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '15px 25px';
+            notification.style.background = type === 'success' ? 'rgba(40, 167, 69, 0.9)' : 'rgba(220, 53, 69, 0.9)';
+            notification.style.color = 'white';
+            notification.style.borderRadius = '8px';
+            notification.style.zIndex = '2000';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.animation = 'slideIn 0.3s ease, fadeOut 0.3s ease 2.7s';
+            
+            // Remove notification after animation
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
